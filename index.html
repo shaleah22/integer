@@ -1,422 +1,912 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Drill</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #level { position: absolute; top: 10px; right: 10px; font-size: 30px; font-weight:  bold; margin-bottom: 20px; }
-        #question { margin-top: 40px; margin-bottom: 50px; font-size: 30px; }
-        #questionContainer { margin-top: 90px; }
-        #questionImage { 
-            max-width: 400px; 
-            max-height: 300px; 
-            width: auto; 
-            height: auto; 
-            display: block; 
-            margin: 0 auto; 
-        }
-        .choice { margin: 10px 0; padding: 10px; font-size: 24px; border: 3px solid #ccc; cursor: pointer; }
-        .choice:hover { background-color: #f0f0f0; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Balance Ledger - Endless Practice & Modeling</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+
+    .score-badge {
+      position: absolute;
+      top: 0;
+      left: 1.5rem;
+      background-color: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1rem;
+      z-index: 5;
+    }
+
+    .reset-btn {
+      position: absolute;
+      top: 0;
+      right: 1.5rem;
+      background-color: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      z-index: 5;
+    }
+
+    .reset-btn:hover {
+      background-color: #cbd5e1;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #0f172a;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    p.subtitle {
+      color: #64748b;
+      margin-top: -0.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .card {
+      max-width: 600px;
+      margin: 0 auto 1.5rem auto;
+      text-align: center;
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    .problem-display {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      font-size: 1.25rem;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      background-color: #ffffff;
+      text-align: center;
+    }
+
+    input[type="text"]:focus {
+      border-color: #2563eb;
+    }
+
+    button.action-btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button.action-btn:hover {
+      background-color: #1d4ed8;
+    }
+
+    .feedback-box {
+      margin-top: 1.25rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      max-width: 450px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.4;
+    }
+
+    .feedback-box.incorrect {
+      background-color: #ffeeec;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .feedback-box.correct {
+      background-color: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+
+    .submit-panel {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .submit-panel input {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .submit-homework-btn {
+      background-color: #059669;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+      transition: background-color 0.2s;
+    }
+
+    .submit-homework-btn:hover {
+      background-color: #047857;
+    }
+
+    .ledgerfield-card {
+      width: 100vw;
+      padding: 1.5rem 0;
+      display: none;
+      position: relative;
+      background: #e2e8f0;
+      border-top: 2px solid #cbd5e1;
+      border-bottom: 2px solid #cbd5e1;
+      margin-top: 1rem;
+    }
+
+    .ledgerfield-layout {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding-left: calc((100vw - 900px) / 2 + 1.5rem);
+    }
+
+    @media (max-width: 900px) {
+      .ledgerfield-layout {
+        padding-left: 1.5rem;
+      }
+    }
+
+    .labels-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 140px;
+      min-width: 170px;
+      padding-right: 1rem;
+    }
+
+    .label {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #334155;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .grid-track {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex: 1;
+      padding-bottom: 8px;
+      padding-right: 2rem;
+      position: relative;
+    }
+
+    .token-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 140px;
+      width: 40px;
+      flex-shrink: 0;
+    }
+
+    .token-slot {
+      width: 40px;
+      height: 52px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .token {
+      width: 40px;
+      height: 52px;
+      transition: transform 0.8s ease-in-out, opacity 0.4s ease-out;
+      position: relative;
+      z-index: 10;
+    }
+
+    .token svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.2));
+    }
+
+    .disappearing {
+      opacity: 0 !important;
+      visibility: hidden;
+      transition: opacity 0.4s ease-out, visibility 0.4s;
+    }
+
+    .group-outline {
+      position: absolute;
+      border: 3px dashed #2563eb;
+      border-radius: 10px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out, width 0.5s ease-in-out, left 0.5s ease-in-out;
+      background-color: rgba(37, 99, 235, 0.05);
+      z-index: 5;
+    }
+
+    .group-outline.visible {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div id="userInput">
-            <h3>Type in your username and press enter to start. No spaces. No capital letters.</h3>
-            <input type="text" id="nameInput" placeholder="Enter Name" autofocus>
-            <p id="output"></p>
-        </div>
-        <div id="quiz" style="display: none;">
-            <img id="questionImage" style="max-width: 50%; height: auto; margin-bottom: 15px;" src="" alt="Question image" />
-            <div id="level">Level: 1</div>
-            <div id="question">Question goes here</div>
-            <div id="choices" style="display: none;"></div>
-            <input type="text" id="inputBox" placeholder="Type your answer here" disabled style="display: none;" />
-            <div id="feedback"></div>
-        </div>
+
+<div class="container">
+  <div id="scoreBadge" class="score-badge">Score: 0 / 20</div>
+  <button class="reset-btn" onclick="resetPractice()">Restart</button>
+
+  <h1>Add & Subtract Integers</h1>
+  <p id="instructionSubtitle" class="subtitle">Solve 20 problems on the first try to complete your practice assignment! You can press enter to go to the next problem.</p>
+
+  <div class="card">
+    <div id="problemDisplay" class="problem-display"></div>
+    <div id="practiceControlGroup" class="input-group">
+      <input type="text" id="answerInput" placeholder="Your answer" autofocus />
+      <button class="action-btn" id="submitBtn" onclick="handleAction()">Submit</button>
     </div>
-    <script>
+    <div id="feedbackBox" class="feedback-box"></div>
 
+    <div id="submitPanel" class="submit-panel">
+      <p style="color: #059669; font-weight: 700; margin: 0;">🎉 Drill Complete! Enter your name to submit:</p>
+      <input type="text" id="studentNameInput" placeholder="Your Full Name" />
+      <button class="submit-homework-btn" onclick="submitScoreToTeacher()">YOU NEED TO PRESS THE SUBMIT BUTTON TWICE. ONCE HERE AND ONCE ON THE GOOGLE FORM. ➔</button>
+    </div>
+  </div>
+</div>
 
-        //no right click code
-         window.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        }, false);
+<div id="ledgerfield" class="ledgerfield-card">
+  <div class="ledgerfield-layout">
+    <div class="labels-column">
+      <div id="labelPos" class="label">Credits (+0)</div>
+      <div id="labelNeg" class="label">Debits (-0)</div>
+    </div>
+    
+    <div id="gridTrack" class="grid-track" style="position: relative;">
+      <div id="groupOutline1" class="group-outline"></div>
+      <div id="groupOutline2" class="group-outline"></div>
+    </div>
+  </div>
+</div>
 
-         
-        const questions = [
-            //beginning of questions
+<script>
+  // ==========================================
+  // TEACHER CONFIGURATION
+  // ==========================================
+  const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe4_Gnrq1zyrttA3lSgrVBtMkaVaoMim31ByzoH-orxmfDB2A/viewform";
+  const ENTRY_NAME_ID = "entry.1899284808"; 
+  const ENTRY_SCORE_ID = "entry.1974610095"; 
+  const TARGET_SCORE = 20;                 
+  // ==========================================
 
+  const DEBIT_TOKEN_SVG = `
+    <svg viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="12" y="14" width="40" height="52" rx="8" fill="#ef4444"/>
+      <circle cx="32" cy="40" r="14" fill="#ffffff"/>
+      <path d="M 24 40 L 40 40" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+  `;
 
- 
-//integer operations
+  const CREDIT_TOKEN_SVG = `
+    <svg viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="12" y="14" width="40" height="52" rx="8" fill="#0f172a"/>
+      <circle cx="32" cy="40" r="14" fill="#ffffff"/>
+      <path d="M 24 40 L 40 40 M 32 32 L 32 48" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  `;
 
+  let currentProblem = null;
+  let animationInterval = null;
+  let isAnswerChecked = false;
+  let firstTryCorrectCount = 0;
+  let hasAnsweredCurrent = false;
+  let waitingForEnter = false;
+  let isCompleted = false;
 
-{"question": "Write −3 − 6 as an equivalent addition problem.","options": ["−3 + 6", "3 + 6", "−3 + 6", "−3 + (−6)"],"answer": "−3 + (−6)","imageUrl": ""},
-{ question: "-3 - (-9) = ", answer: "6", imageUrl: "https://i.postimg.cc/brP2T39q/3-9.gif" },
-{ question: "-9 - 3 = ", answer: "-12", imageUrl: "https://i.postimg.cc/P5H5s0wj/9-3.gif" },
-{ question: "3 - 9 = ", answer: "-6", imageUrl: "https://i.postimg.cc/XY11B6SL/3-9.gif" },
-{ question: "6(8) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "7 x 8 =  ", answer: "56", imageUrl: "https://i.postimg.cc/Z5y8Bs0K/56-7-x-8.gif" },
-{ question: "(-3)(-9) = ", answer: "27", imageUrl: "https://i.postimg.cc/D0jFhsgq/9-times-3.gif" },
-{ question: " (-8)(-7) = ", answer: "56", imageUrl: "https://i.postimg.cc/kGbX10T8/8-x-7.gif" },
-{ question: " -8 - 7 = ", answer: "-15", imageUrl: "https://i.postimg.cc/j5G9f0H3/8-7.gif" },
-{ question: "-3 - (-9) = ", answer: "6", imageUrl: "https://i.postimg.cc/brP2T39q/3-9.gif" },
-{ question: " 7 - 8 = ", answer: "-1", imageUrl: "https://i.postimg.cc/RZsJHfQr/7-8.gif" },
-{ question: "(-6)(7) = ", answer: "-42", imageUrl: "https://i.postimg.cc/YCpgbLDt/Screenshot-2024-11-28-at-6-51-38-AM.png" },
-{ question: "6(7) = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "(-4)(7) =  ", answer: "-28", imageUrl: "https://i.postimg.cc/9Q3THqn3/Screenshot-2024-11-28-at-6-50-44-AM.png" },
-{ question: "(-4) + 7 =  ", answer: "3", imageUrl: "https://i.postimg.cc/Wpnv8Gc9/negative-4-plus-7.gif" },
-{ question: "(-7) + (-4) =  ", answer: "-11", imageUrl: "https://i.postimg.cc/Jzp4gkyL/7-4.gif" },
-{ question: "5 x 7 =  ", answer: "35", imageUrl: "https://i.postimg.cc/TYgWR3bZ/Screenshot-2024-11-28-at-6-43-35-AM.png" },
-{ question: "-5 + 7 =  ", answer: "2", imageUrl: "https://i.postimg.cc/Njq5Wjh0/pictures.gif" },
-{ question: "7 x 7  = ", answer: "49", imageUrl: "https://i.postimg.cc/G2Kyn7s9/Screenshot-2024-11-28-at-6-43-00-AM.png" },
-{ question: "-9(-7) = ", answer: "63", imageUrl: "https://i.postimg.cc/JnsLRtsJ/9-times-7.gif" },
-{ question: "- 9 - 7  = ", answer: "-16", imageUrl: "https://i.postimg.cc/cJV8jDhp/9-7.gif" },
-{ question: "- 7 - (-9)  = ", answer: "2", imageUrl: "https://i.postimg.cc/FzMZwkXZ/1.gif" },
-{ question: "4 x 8  = ", answer: "32", imageUrl: "https://i.postimg.cc/Fzrdz9g4/Screenshot-2024-11-29-at-4-59-46-AM.png" },
-{ question: "(4)(-9) = ", answer: "-36", imageUrl: "https://i.postimg.cc/nzFg7kbD/Screenshot-2024-11-29-at-6-39-48-AM.png" },
-{ question: "-4 + 9 = ", answer: "5", imageUrl: "https://i.postimg.cc/Wpm527VM/4-9.gif" },
-{ question: "6 * 9 = ", answer: "54", imageUrl: "https://i.postimg.cc/Pq8TWBr8/Screenshot-2024-11-29-at-5-02-01-AM.png" },
-{ question: "-6 + 9 = ", answer: "3", imageUrl: "https://i.postimg.cc/cHGNFVqp/6-9.gif" },
-{ question: "- 9 - 6 = ", answer: "-15", imageUrl: "https://i.postimg.cc/JhB9Mn3s/9-6.gif" },
-{ question: "(-8)(9)  = ", answer: "-72", imageUrl: "https://i.postimg.cc/15CK6ddS/Screenshot-2024-11-29-at-5-05-04-AM.png" },
-{ question: "(-6)(-8) = ", answer: "48", imageUrl: "https://i.postimg.cc/KYPKxkSz/6-x-8.gif" },
-{ question: "-8 + (-3) = ", answer: "-11", imageUrl: "https://i.postimg.cc/76fjtvgD/8-3.gif" },
-{ question: "-2 - (-9) =", answer: "7", imageUrl: "https://i.postimg.cc/4NGpBf1v/2-9.gif" },
-{ question: "7 - (-4) = ", answer: "11", imageUrl: "https://i.postimg.cc/ZKb4RJ0w/7-4.gif" },
-{ question: "-4 - 5  = ", answer: "-9", imageUrl: "https://i.postimg.cc/3rf2LcXx/4-5.gif" },
-{ question: "- 7 - 6  = ", answer: "-13", imageUrl: "https://i.postimg.cc/76XPyrRR/7-6.gif" },
-{ question: "(- 7)(- 6)  = ", answer: "42", imageUrl: "https://i.postimg.cc/7hPVfqby/7-x-6.gif" },
-{ question: "- 8 - 7 = ", answer: "-15", imageUrl: "https://i.postimg.cc/j5G9f0H3/8-7.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "- 8 - 5  =", answer: "-13", imageUrl: "https://i.postimg.cc/vmhBzy3B/8-5.gif" },
-{ question: "7 - (-5) = ", answer: "12", imageUrl: "https://i.postimg.cc/cLHXZRb4/7-5.gif" },
-{ question: "-8 + (-3) = ", answer: "-11", imageUrl: "https://i.postimg.cc/76fjtvgD/8-3.gif" },
-{ question: "- 7 - 6  = ", answer: "-13", imageUrl: "https://i.postimg.cc/76XPyrRR/7-6.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "- 7 - 7 = ", answer: "-14", imageUrl: "https://i.postimg.cc/mZwjKpgF/7-7.gif" },
-{ question: "8 x 6 = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "- 7 - 4  = ", answer: "-11", imageUrl: "https://i.postimg.cc/Jzp4gkyL/7-4.gif" },
-{ question: "- 8 - 4 = ", answer: "-12", imageUrl: "https://i.postimg.cc/Ghh5h87t/8-4.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "- 8 - 6  =", answer: "-14", imageUrl: "https://i.postimg.cc/vZmTzzPy/8-6.gif" },
-{ question: "9 - (-8) = ", answer: "17", imageUrl: "https://i.postimg.cc/zX864PZs/9-8.gif" },
-{ question: "- 5 - 6  = ", answer: "-11", imageUrl: "https://i.postimg.cc/C5gh3HSc/5-6.gif" },
-{ question: "8(6) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "- 5 - 7 = ", answer: "-12", imageUrl: "https://i.postimg.cc/mDrNQM06/5-7.gif" },
-{ question: "5 - (-9) = ", answer: "14", imageUrl: "https://i.postimg.cc/tgFgsrqN/5-9.gif" },
-{ question: "5 - 7 = ", answer: "-2", imageUrl: "https://i.postimg.cc/h497ZWwg/5-7.gif" },
-{ question: " 'at least' is a key phrase for what inequality sign?" , answer: ">=", imageUrl: "" },
-{ question: 'Type in the "less than" sign" ', answer: "<", imageUrl: "https://i.postimg.cc/cChG5LXx/Screenshot-2024-12-25-at-6-41-24-AM.png" },
-{ question: "6(8) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "-6 + 8 = ", answer: "2", imageUrl: "https://i.postimg.cc/sgcD98K4/6-8.gif" },
-{ question: "6 - 8 = ", answer: "-2", imageUrl: "https://i.postimg.cc/KYcqR90W/6-8.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "8 - (-6) = ", answer: "14", imageUrl: "https://i.postimg.cc/8cqkCfDy/8-6.gif" },
-{ question: "-6 - (-8) = ", answer: "2", imageUrl: "https://i.postimg.cc/zDjnfnLL/6-8.gif" },
-{ question: "11 x 12 = ", answer: "132", imageUrl: "https://i.postimg.cc/mkdqWjtv/11-x-12.gif" },
-{ question: "12 x 8 = ", answer: "96", imageUrl: "https://i.postimg.cc/vTSr9rGy/12-x-8.gif" },
-{ question: "12 x 7 = ", answer: "84", imageUrl: "https://i.postimg.cc/x8MSWRqj/12-x-7.gif" },
-{ question: "-12 + 7 = ", answer: "-5", imageUrl: "https://i.postimg.cc/RFqmkf7F/12-7.gif" },
-{ question: "12 x 6 = ", answer: "72", imageUrl: "https://i.postimg.cc/nrHnKRvD/12-x-6.gif" },
-{ question: "12 x 9 = ", answer: "108", imageUrl: "https://i.postimg.cc/bwfVHL7H/12-x-9.gif" },
-{ question: "12 x 5 = ", answer: "60", imageUrl: "https://i.postimg.cc/K8zVYQMZ/12-x-5.gif" },
-{ question: "-12 + 8 = ", answer: "-4", imageUrl: "https://i.postimg.cc/3NSqQxwm/12-8.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "-12 - 8 = ", answer: "-20", imageUrl: "https://i.postimg.cc/SRXcxttP/12-8.gif" },
-{ question: "-8 + 12 = ", answer: "4", imageUrl: "https://i.postimg.cc/QMDVV9j5/8-12.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "6(8) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "6 * 9 = ", answer: "54", imageUrl: "https://i.postimg.cc/Pq8TWBr8/Screenshot-2024-11-29-at-5-02-01-AM.png" },
-{ question: "12 x 6 = ", answer: "72", imageUrl: "https://i.postimg.cc/nrHnKRvD/12-x-6.gif" },
-{ question: "7 x 7  = ", answer: "49", imageUrl: "https://i.postimg.cc/G2Kyn7s9/Screenshot-2024-11-28-at-6-43-00-AM.png" },
-{ question: "7 x 8 =  ", answer: "56", imageUrl: "https://i.postimg.cc/Z5y8Bs0K/56-7-x-8.gif" },
-{ question: "-9(-7) = ", answer: "63", imageUrl: "https://i.postimg.cc/JnsLRtsJ/9-times-7.gif" },
-{ question: "12 x 7 = ", answer: "84", imageUrl: "https://i.postimg.cc/x8MSWRqj/12-x-7.gif" },
-{ question: "8 x 8 = ", answer: "64", imageUrl: "https://i.postimg.cc/gcDXRbwB/Screenshot-2024-12-04-at-5-10-05-AM.png" },
-{ question: "8 x 9 = ", answer: "72", imageUrl: "https://i.postimg.cc/yY3LYMzJ/nines.gif" },
-{ question: "8 x 12 = ", answer: "96", imageUrl: "https://i.postimg.cc/vTSr9rGy/12-x-8.gif" },
-{ question: "12 x 9 = ", answer: "108", imageUrl: "https://i.postimg.cc/bwfVHL7H/12-x-9.gif" },
-//8 and 13 question set FIRST APPEARANCE
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/KjH6F0Y0/8-x-13-floor-001.jpg" },
-{ question: "-8 + 13 = ", answer: "5", imageUrl: "https://i.postimg.cc/3wcWsBZw/8-13.gif" },
-{ question: "-8 - 13 = ", answer: "-21", imageUrl: "https://i.postimg.cc/8CmBVx0b/8-13.gif" },
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/KjH6F0Y0/8-x-13-floor-001.jpg" },
-{ question: "-13 - 8  = ", answer: "-21", imageUrl: "https://i.postimg.cc/cLMFBDNP/13-8.gif" },
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/kgnQqqkh/8-x-13-distributive-001.jpg" },
-{ question: "13 - (-8)  = ", answer: "21", imageUrl: "https://i.postimg.cc/VkR3ks5S/13-8.gif" },
-{ question: "8 - 13 = ", answer: "-5", imageUrl: "https://i.postimg.cc/rmrTs6vv/8-13.gif" },
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/KjH6F0Y0/8-x-13-floor-001.jpg" },
+  const scoreBadgeEl = document.getElementById('scoreBadge');
+  const problemDisplayEl = document.getElementById('problemDisplay');
+  const answerInputEl = document.getElementById('answerInput');
+  const feedbackBoxEl = document.getElementById('feedbackBox');
+  const submitBtnEl = document.getElementById('submitBtn');
+  const ledgerfieldEl = document.getElementById('ledgerfield');
+  const gridTrackEl = document.getElementById('gridTrack');
+  const groupOutline1 = document.getElementById('groupOutline1');
+  const groupOutline2 = document.getElementById('groupOutline2');
+  const submitPanelEl = document.getElementById('submitPanel');
+  const practiceControlGroupEl = document.getElementById('practiceControlGroup');
+  const instructionSubtitleEl = document.getElementById('instructionSubtitle');
+  const studentNameInputEl = document.getElementById('studentNameInput');
 
+  window.onload = function() {
+    loadNewProblem();
+  };
 
-//duplicate
+  answerInputEl.addEventListener('input', function() {
+    if (isAnswerChecked || isCompleted) return;
+    const rawVal = answerInputEl.value.trim();
+    if (rawVal === '' || rawVal === '-' || rawVal === '+') return;
 
+    const userVal = parseInt(rawVal, 10);
+    if (!isNaN(userVal) && userVal === currentProblem.ans) {
+      checkAnswer();
+    }
+  });
 
-{"question": "Write −3 − 6 as an equivalent addition problem.","options": ["−3 + 6", "3 + 6", "−3 + 6", "−3 + (−6)"],"answer": "−3 + (−6)","imageUrl": ""},
-{ question: "-3 - (-9) = ", answer: "6", imageUrl: "https://i.postimg.cc/brP2T39q/3-9.gif" },
-{ question: "-9 - 3 = ", answer: "-12", imageUrl: "https://i.postimg.cc/P5H5s0wj/9-3.gif" },
-{ question: "3 - 9 = ", answer: "-6", imageUrl: "https://i.postimg.cc/XY11B6SL/3-9.gif" },
-{ question: "6(8) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "7 x 8 =  ", answer: "56", imageUrl: "https://i.postimg.cc/Z5y8Bs0K/56-7-x-8.gif" },
-{ question: "(-3)(-9) = ", answer: "27", imageUrl: "https://i.postimg.cc/D0jFhsgq/9-times-3.gif" },
-{ question: " (-8)(-7) = ", answer: "56", imageUrl: "https://i.postimg.cc/kGbX10T8/8-x-7.gif" },
-{ question: " -8 - 7 = ", answer: "-15", imageUrl: "https://i.postimg.cc/j5G9f0H3/8-7.gif" },
-{ question: "-3 - (-9) = ", answer: "6", imageUrl: "https://i.postimg.cc/brP2T39q/3-9.gif" },
-{ question: " 7 - 8 = ", answer: "-1", imageUrl: "https://i.postimg.cc/RZsJHfQr/7-8.gif" },
-{ question: "(-6)(7) = ", answer: "-42", imageUrl: "https://i.postimg.cc/YCpgbLDt/Screenshot-2024-11-28-at-6-51-38-AM.png" },
-{ question: "6(7) = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "(-4)(7) =  ", answer: "-28", imageUrl: "https://i.postimg.cc/9Q3THqn3/Screenshot-2024-11-28-at-6-50-44-AM.png" },
-{ question: "(-4) + 7 =  ", answer: "3", imageUrl: "https://i.postimg.cc/Wpnv8Gc9/negative-4-plus-7.gif" },
-{ question: "(-7) + (-4) =  ", answer: "-11", imageUrl: "https://i.postimg.cc/Jzp4gkyL/7-4.gif" },
-{ question: "5 x 7 =  ", answer: "35", imageUrl: "https://i.postimg.cc/TYgWR3bZ/Screenshot-2024-11-28-at-6-43-35-AM.png" },
-{ question: "-5 + 7 =  ", answer: "2", imageUrl: "https://i.postimg.cc/Njq5Wjh0/pictures.gif" },
-{ question: "7 x 7  = ", answer: "49", imageUrl: "https://i.postimg.cc/G2Kyn7s9/Screenshot-2024-11-28-at-6-43-00-AM.png" },
-{ question: "-9(-7) = ", answer: "63", imageUrl: "https://i.postimg.cc/JnsLRtsJ/9-times-7.gif" },
-{ question: "- 9 - 7  = ", answer: "-16", imageUrl: "https://i.postimg.cc/cJV8jDhp/9-7.gif" },
-{ question: "- 7 - (-9)  = ", answer: "2", imageUrl: "https://i.postimg.cc/FzMZwkXZ/1.gif" },
-{ question: "4 x 8  = ", answer: "32", imageUrl: "https://i.postimg.cc/Fzrdz9g4/Screenshot-2024-11-29-at-4-59-46-AM.png" },
-{ question: "(4)(-9) = ", answer: "-36", imageUrl: "https://i.postimg.cc/nzFg7kbD/Screenshot-2024-11-29-at-6-39-48-AM.png" },
-{ question: "-4 + 9 = ", answer: "5", imageUrl: "https://i.postimg.cc/Wpm527VM/4-9.gif" },
-{ question: "6 * 9 = ", answer: "54", imageUrl: "https://i.postimg.cc/Pq8TWBr8/Screenshot-2024-11-29-at-5-02-01-AM.png" },
-{ question: "-6 + 9 = ", answer: "3", imageUrl: "https://i.postimg.cc/cHGNFVqp/6-9.gif" },
-{ question: "- 9 - 6 = ", answer: "-15", imageUrl: "https://i.postimg.cc/JhB9Mn3s/9-6.gif" },
-{ question: "(-8)(9)  = ", answer: "-72", imageUrl: "https://i.postimg.cc/15CK6ddS/Screenshot-2024-11-29-at-5-05-04-AM.png" },
-{ question: "(-6)(-8) = ", answer: "48", imageUrl: "https://i.postimg.cc/KYPKxkSz/6-x-8.gif" },
-{ question: "-8 + (-3) = ", answer: "-11", imageUrl: "https://i.postimg.cc/76fjtvgD/8-3.gif" },
-{ question: "-2 - (-9) =", answer: "7", imageUrl: "https://i.postimg.cc/4NGpBf1v/2-9.gif" },
-{ question: "7 - (-4) = ", answer: "11", imageUrl: "https://i.postimg.cc/ZKb4RJ0w/7-4.gif" },
-{ question: "-4 - 5  = ", answer: "-9", imageUrl: "https://i.postimg.cc/3rf2LcXx/4-5.gif" },
-{ question: "- 7 - 6  = ", answer: "-13", imageUrl: "https://i.postimg.cc/76XPyrRR/7-6.gif" },
-{ question: "(- 7)(- 6)  = ", answer: "42", imageUrl: "https://i.postimg.cc/7hPVfqby/7-x-6.gif" },
-{ question: "- 8 - 7 = ", answer: "-15", imageUrl: "https://i.postimg.cc/j5G9f0H3/8-7.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "- 8 - 5  =", answer: "-13", imageUrl: "https://i.postimg.cc/vmhBzy3B/8-5.gif" },
-{ question: "7 - (-5) = ", answer: "12", imageUrl: "https://i.postimg.cc/cLHXZRb4/7-5.gif" },
-{ question: "-8 + (-3) = ", answer: "-11", imageUrl: "https://i.postimg.cc/76fjtvgD/8-3.gif" },
-{ question: "- 7 - 6  = ", answer: "-13", imageUrl: "https://i.postimg.cc/76XPyrRR/7-6.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "- 7 - 7 = ", answer: "-14", imageUrl: "https://i.postimg.cc/mZwjKpgF/7-7.gif" },
-{ question: "8 x 6 = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "- 7 - 4  = ", answer: "-11", imageUrl: "https://i.postimg.cc/Jzp4gkyL/7-4.gif" },
-{ question: "- 8 - 4 = ", answer: "-12", imageUrl: "https://i.postimg.cc/Ghh5h87t/8-4.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "- 8 - 6  =", answer: "-14", imageUrl: "https://i.postimg.cc/vZmTzzPy/8-6.gif" },
-{ question: "9 - (-8) = ", answer: "17", imageUrl: "https://i.postimg.cc/zX864PZs/9-8.gif" },
-{ question: "- 5 - 6  = ", answer: "-11", imageUrl: "https://i.postimg.cc/C5gh3HSc/5-6.gif" },
-{ question: "8(6) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "- 5 - 7 = ", answer: "-12", imageUrl: "https://i.postimg.cc/mDrNQM06/5-7.gif" },
-{ question: "5 - (-9) = ", answer: "14", imageUrl: "https://i.postimg.cc/tgFgsrqN/5-9.gif" },
-{ question: "5 - 7 = ", answer: "-2", imageUrl: "https://i.postimg.cc/h497ZWwg/5-7.gif" },
-{ question: " 'at least' is a key phrase for what inequality sign?" , answer: ">=", imageUrl: "" },
-{ question: 'Type in the "less than" sign" ', answer: "<", imageUrl: "https://i.postimg.cc/cChG5LXx/Screenshot-2024-12-25-at-6-41-24-AM.png" },
-{ question: "6(8) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "-6 + 8 = ", answer: "2", imageUrl: "https://i.postimg.cc/sgcD98K4/6-8.gif" },
-{ question: "6 - 8 = ", answer: "-2", imageUrl: "https://i.postimg.cc/KYcqR90W/6-8.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "8 - (-6) = ", answer: "14", imageUrl: "https://i.postimg.cc/8cqkCfDy/8-6.gif" },
-{ question: "-6 - (-8) = ", answer: "2", imageUrl: "https://i.postimg.cc/zDjnfnLL/6-8.gif" },
-{ question: "11 x 12 = ", answer: "132", imageUrl: "https://i.postimg.cc/mkdqWjtv/11-x-12.gif" },
-{ question: "12 x 8 = ", answer: "96", imageUrl: "https://i.postimg.cc/vTSr9rGy/12-x-8.gif" },
-{ question: "12 x 7 = ", answer: "84", imageUrl: "https://i.postimg.cc/x8MSWRqj/12-x-7.gif" },
-{ question: "-12 + 7 = ", answer: "-5", imageUrl: "https://i.postimg.cc/RFqmkf7F/12-7.gif" },
-{ question: "12 x 6 = ", answer: "72", imageUrl: "https://i.postimg.cc/nrHnKRvD/12-x-6.gif" },
-{ question: "12 x 9 = ", answer: "108", imageUrl: "https://i.postimg.cc/bwfVHL7H/12-x-9.gif" },
-{ question: "12 x 5 = ", answer: "60", imageUrl: "https://i.postimg.cc/K8zVYQMZ/12-x-5.gif" },
-{ question: "-12 + 8 = ", answer: "-4", imageUrl: "https://i.postimg.cc/3NSqQxwm/12-8.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "-12 - 8 = ", answer: "-20", imageUrl: "https://i.postimg.cc/SRXcxttP/12-8.gif" },
-{ question: "-8 + 12 = ", answer: "4", imageUrl: "https://i.postimg.cc/QMDVV9j5/8-12.gif" },
-{ question: "6 x 7 = ", answer: "42", imageUrl: "https://i.postimg.cc/MTBWSPbb/Screenshot-2024-12-03-at-4-42-01-AM.png" },
-{ question: "6(8) = ", answer: "48", imageUrl: "https://i.postimg.cc/ncHFD9x7/Screenshot-2024-12-04-at-6-10-16-AM.png" },
-{ question: "6 * 9 = ", answer: "54", imageUrl: "https://i.postimg.cc/Pq8TWBr8/Screenshot-2024-11-29-at-5-02-01-AM.png" },
-{ question: "12 x 6 = ", answer: "72", imageUrl: "https://i.postimg.cc/nrHnKRvD/12-x-6.gif" },
-{ question: "7 x 7  = ", answer: "49", imageUrl: "https://i.postimg.cc/G2Kyn7s9/Screenshot-2024-11-28-at-6-43-00-AM.png" },
-{ question: "7 x 8 =  ", answer: "56", imageUrl: "https://i.postimg.cc/Z5y8Bs0K/56-7-x-8.gif" },
-{ question: "-9(-7) = ", answer: "63", imageUrl: "https://i.postimg.cc/JnsLRtsJ/9-times-7.gif" },
-{ question: "12 x 7 = ", answer: "84", imageUrl: "https://i.postimg.cc/x8MSWRqj/12-x-7.gif" },
-{ question: "8 x 8 = ", answer: "64", imageUrl: "https://i.postimg.cc/gcDXRbwB/Screenshot-2024-12-04-at-5-10-05-AM.png" },
-{ question: "8 x 9 = ", answer: "72", imageUrl: "https://i.postimg.cc/yY3LYMzJ/nines.gif" },
-{ question: "8 x 12 = ", answer: "96", imageUrl: "https://i.postimg.cc/vTSr9rGy/12-x-8.gif" },
-{ question: "12 x 9 = ", answer: "108", imageUrl: "https://i.postimg.cc/bwfVHL7H/12-x-9.gif" },
-//8 and 13 question set FIRST APPEARANCE
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/KjH6F0Y0/8-x-13-floor-001.jpg" },
-{ question: "-8 + 13 = ", answer: "5", imageUrl: "https://i.postimg.cc/3wcWsBZw/8-13.gif" },
-{ question: "-8 - 13 = ", answer: "-21", imageUrl: "https://i.postimg.cc/8CmBVx0b/8-13.gif" },
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/KjH6F0Y0/8-x-13-floor-001.jpg" },
-{ question: "-13 - 8  = ", answer: "-21", imageUrl: "https://i.postimg.cc/cLMFBDNP/13-8.gif" },
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/kgnQqqkh/8-x-13-distributive-001.jpg" },
-{ question: "13 - (-8)  = ", answer: "21", imageUrl: "https://i.postimg.cc/VkR3ks5S/13-8.gif" },
-{ question: "8 - 13 = ", answer: "-5", imageUrl: "https://i.postimg.cc/rmrTs6vv/8-13.gif" },
-{ question: "8 x 13 = ", answer: "104", imageUrl: "https://i.postimg.cc/KjH6F0Y0/8-x-13-floor-001.jpg" },
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (document.activeElement === studentNameInputEl) {
+        submitScoreToTeacher();
+        return;
+      }
+      if (isCompleted) return;
+      e.preventDefault();
+      handleAction();
+    }
+  });
 
+  function updateScoreDisplay() {
+    scoreBadgeEl.textContent = `Score: ${firstTryCorrectCount} / ${TARGET_SCORE}`;
+  }
 
+  function handleAction() {
+    if (isCompleted) return;
+    if (!isAnswerChecked) {
+      checkAnswer();
+    } else if (waitingForEnter) {
+      nextProblem();
+    }
+  }
 
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
+  function generateRandomProblem() {
+    let a = 0, b = 0;
+    let opType = 0;
+    let category = getRandomInt(1, 4); 
+    // 1: Double Negative (e.g. a - (-b))
+    // 2: Same Sign Negative (e.g. -a + (-b) or -a - b)
+    // 3: Cancellation / Mixed Signs
+    // 4: Elementary Positive (kept rare: restricted to low frequency)
 
-
-
-
-
-
-            //end of questions
-        ];
-
-        let currentLevel = 1;
-        let currentQuestionIndex = 0;
-        let shuffledQuestions = [];
-        let timer;
-        let answerTimeout;
-        const totalTime = 120000; // 120 seconds for the entire drill
-        const answerDelay = 10000; // 10 seconds before showing correct answer
-
-        window.onload = function() {
-            shuffledQuestions = shuffleArray(questions);
-        };
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+    while (true) {
+      if (category === 1) {
+        // Double Negative: a - (-b)
+        opType = 1;
+        a = getRandomInt(-9, 9);
+        b = getRandomInt(-9, -1);
+        while (a === 0) a = getRandomInt(-9, 9);
+        break;
+      } else if (category === 2) {
+        // Same Sign Negative: both numbers contribute to a negative sum
+        opType = getRandomInt(0, 1);
+        if (opType === 0) {
+          a = getRandomInt(-9, -1);
+          b = getRandomInt(-9, -1);
+        } else {
+          a = getRandomInt(-9, -1);
+          b = getRandomInt(1, 9); // negative minus positive = more negative
         }
-
-        async function startDrill() {
-            const name = document.getElementById("nameInput").value.trim();
-            if (!name) {
-                document.getElementById("output").textContent = "Please enter a name.";
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://script.google.com/macros/s/AKfycbySL-Nwv6Oa-Nghdxq9LiZBBGYeQPUhXKTar4yFZUTv54PVcHyOdfgtTRR_IDLkOwWd_g/exec?name=${encodeURIComponent(name)}`);
-                const data = await response.json();
-                if (data.error) {
-                    document.getElementById("output").textContent = data.error;
-                } else {
-                    currentLevel = parseInt(data.level);
-                    document.getElementById("output").textContent = "";
-                    document.getElementById("userInput").style.display = "none";
-                    document.getElementById("quiz").style.display = "block";
-                    document.getElementById("level").textContent = `Level: ${currentLevel}`;
-                    startTimer();
-                    loadQuestion();
-                }
-            } catch (error) {
-                document.getElementById("output").textContent = "An error occurred while retrieving the level.";
-                console.error(error);
-            }
+        break;
+      } else if (category === 3) {
+        // Cancellation / Mixed signs
+        opType = getRandomInt(0, 1);
+        a = getRandomInt(-9, 9);
+        b = getRandomInt(-9, 9);
+        while (a === 0) a = getRandomInt(-9, 9);
+        while (b === 0) b = getRandomInt(-9, 9);
+        
+        let isEasy = (a > 0 && b > 0 && Math.abs(a) + Math.abs(b) <= 10);
+        let isSameNeg = (a < 0 && (opType === 0 ? b < 0 : b > 0));
+        let isDoubleNeg = (opType === 1 && b < 0);
+        
+        if (!isEasy && !isSameNeg && !isDoubleNeg) {
+          break;
         }
-
-        function startTimer() {
-            timer = setTimeout(() => {
-                alert("Time is up! Press OK");
-                submitDetails();
-                endDrill();
-            }, totalTime);
+      } else {
+        // Elementary Positive (rarely picked, only ~15% chance to actually keep)
+        opType = 0;
+        a = getRandomInt(1, 6);
+        b = getRandomInt(1, 6);
+        if (Math.random() < 0.15) {
+          break;
         }
+        // otherwise retry category loop
+        category = getRandomInt(1, 3);
+      }
+    }
 
-        function loadQuestion() {
-            clearTimeout(answerTimeout);
-            const question = shuffledQuestions[currentQuestionIndex];
-            document.getElementById('question').innerHTML = question.question;
+    let expr = "";
+    let ans = 0;
+    let pos = 0;
+    let neg = 0;
+    let type = "cancel";
+    let g1 = 0, g2 = 0;
+    
+    let isDoubleNeg = (opType === 1 && b < 0);
+    let isSameSign = false;
 
-            if (question.imageUrl) {
-                document.getElementById('questionImage').src = question.imageUrl;
-                document.getElementById('questionImage').style.display = "block";
-            } else {
-                document.getElementById('questionImage').style.display = "none";
-            }
+    if (opType === 0) {
+      expr = `${a} + ${b < 0 ? '(' + b + ')' : b}`;
+      ans = a + b;
 
-            if (question.options) {
-                loadChoiceQuestion(question);
-            } else {
-                loadInputQuestion(question);
-            }
-
-            answerTimeout = setTimeout(() => {
-                alert(`The correct answer was: ${question.answer}`);
-                document.getElementById('feedback').textContent = "Please enter or select the correct answer to proceed.";
-            }, answerDelay);
+      if (b < 0) {
+        if (a < 0) {
+          isSameSign = true;
+        } else {
+          isSameSign = false;
         }
-
-        function loadChoiceQuestion(question) {
-            document.getElementById('inputBox').style.display = "none";
-            const choicesContainer = document.getElementById('choices');
-            choicesContainer.style.display = "block";
-            choicesContainer.innerHTML = "";
-
-            question.options.forEach(option => {
-                const button = document.createElement('button');
-                button.innerText = option;
-                button.className = 'choice';
-                button.onclick = () => checkAnswer(option);
-                choicesContainer.appendChild(button);
-            });
+      } else {
+        if (a > 0 && b > 0) {
+          isSameSign = true;
+        } else if (a < 0 && b < 0) {
+          isSameSign = true;
         }
+      }
 
-        function loadInputQuestion(question) {
-            document.getElementById('choices').style.display = "none";
-            const inputBox = document.getElementById('inputBox');
-            inputBox.style.display = "block";
-            inputBox.disabled = false;
-            inputBox.value = "";
-            inputBox.oninput = () => checkAnswer(inputBox.value);
-            inputBox.focus();
+      if (a < 0 && b < 0) {
+        type = "same-sign-neg";
+        neg = Math.abs(a) + Math.abs(b);
+        g1 = Math.abs(a);
+        g2 = Math.abs(b);
+      } else if (a > 0 && b > 0) {
+        type = "same-sign-pos";
+        pos = a + b;
+        g1 = a;
+        g2 = b;
+      } else {
+        type = "cancel";
+        pos = (a > 0 ? a : 0) + (b > 0 ? b : 0);
+        neg = (a < 0 ? Math.abs(a) : 0) + (b < 0 ? Math.abs(b) : 0);
+      }
+    } else {
+      let bOpp = -b;
+      expr = `${a} - ${b < 0 ? '(' + b + ')' : b}`;
+      ans = a - b;
+
+      if (a < 0 && b > 0) {
+        type = "same-sign-neg";
+        neg = Math.abs(a) + Math.abs(b);
+        g1 = Math.abs(a);
+        g2 = Math.abs(b);
+        isSameSign = true;
+      } else if (a > 0 && b < 0) {
+        type = "same-sign-pos";
+        pos = a + Math.abs(b);
+        g1 = a;
+        g2 = Math.abs(b);
+        isSameSign = true;
+      } else if (isDoubleNeg) {
+        isSameSign = false;
+        type = "cancel";
+        pos = (a > 0 ? a : 0) + (bOpp > 0 ? bOpp : 0);
+        neg = (a < 0 ? Math.abs(a) : 0) + (bOpp < 0 ? Math.abs(bOpp) : 0);
+      } else {
+        if (a < 0 && b > 0) {
+          type = "same-sign-neg";
+          neg = Math.abs(a) + Math.abs(b);
+          g1 = Math.abs(a);
+          g2 = Math.abs(b);
+          isSameSign = true;
+        } else {
+          type = "cancel";
+          pos = (a > 0 ? a : 0) + (bOpp > 0 ? bOpp : 0);
+          neg = (a < 0 ? Math.abs(a) : 0) + (bOpp < 0 ? Math.abs(bOpp) : 0);
         }
+      }
+    }
 
-        function checkAnswer(userAnswer) {
-            const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
-            if (userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()) {
-                document.getElementById('feedback').textContent = "Correct!";
-                currentLevel++; // Increment level on every correct answer
-                document.getElementById("level").textContent = `Level: ${currentLevel}`;
-                currentQuestionIndex++;
-                if (currentQuestionIndex >= shuffledQuestions.length) {
-                    currentQuestionIndex = 0;
-                }
-                loadQuestion();
-            } else {
-                document.getElementById('feedback').textContent = "Incorrect. Please try again!";
-            }
+    return { expr, ans, pos, neg, type, group1: g1, group2: g2, isDoubleNeg, isSameSign, a, b };
+  }
+
+  function loadNewProblem() {
+    if (isCompleted) return;
+
+    if (animationInterval) {
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
+
+    isAnswerChecked = false;
+    hasAnsweredCurrent = false;
+    waitingForEnter = false;
+    groupOutline1.classList.remove('visible');
+    groupOutline2.classList.remove('visible');
+
+    currentProblem = generateRandomProblem();
+    problemDisplayEl.textContent = currentProblem.expr;
+    answerInputEl.value = '';
+    answerInputEl.disabled = false;
+    submitBtnEl.textContent = 'Submit';
+    feedbackBoxEl.style.display = 'none';
+    ledgerfieldEl.style.display = 'none';
+    answerInputEl.focus();
+  }
+
+  function getAccurateFeedback(prob) {
+    if (prob.isDoubleNeg) {
+      return " - - makes +";
+    } else if (prob.isSameSign) {
+      let absA = Math.abs(prob.a);
+      let secondNum = (prob.expr.includes(' - ') && !prob.isDoubleNeg) ? -prob.b : prob.b;
+      let absB = Math.abs(secondNum);
+      
+      let isNegResult = (prob.ans < 0);
+      let signText = isNegResult ? "Keep negative sign" : "Keep positive sign";
+      return `Add absolute values (${absA} + ${absB}). ${signText}`;
+    } else {
+      let effectiveNum1 = prob.a;
+      let effectiveNum2 = prob.b;
+      if (prob.expr.includes(' - ') && !prob.isDoubleNeg) {
+        effectiveNum2 = -prob.b;
+      }
+      
+      let abs1 = Math.abs(effectiveNum1);
+      let abs2 = Math.abs(effectiveNum2);
+      let largerNum = abs1 >= abs2 ? effectiveNum1 : effectiveNum2;
+      let signText = largerNum < 0 ? "Keep bigger absolute value sign (negative)" : "Keep bigger absolute value sign (positive)";
+      
+      return `Subtract absolute values (${Math.max(abs1, abs2)} - ${Math.min(abs1, abs2)}). ${signText}`;
+    }
+  }
+
+  function checkAnswer() {
+    if (isCompleted) return;
+    const rawVal = answerInputEl.value.trim();
+    if (rawVal === '') return;
+
+    const userVal = parseInt(rawVal, 10);
+
+    if (isNaN(userVal)) {
+      feedbackBoxEl.textContent = 'Please enter a valid integer.';
+      feedbackBoxEl.className = 'feedback-box incorrect';
+      feedbackBoxEl.style.display = 'block';
+      return;
+    }
+
+    isAnswerChecked = true;
+    answerInputEl.disabled = true;
+
+    if (userVal === currentProblem.ans) {
+      if (!hasAnsweredCurrent) {
+        firstTryCorrectCount++;
+        updateScoreDisplay();
+      }
+
+      if (firstTryCorrectCount >= TARGET_SCORE) {
+        triggerCompletion();
+        return;
+      }
+
+      submitBtnEl.textContent = 'Next ➔';
+      feedbackBoxEl.style.display = 'none';
+      
+      startLedgerModel(currentProblem);
+    } else {
+      hasAnsweredCurrent = true;
+      submitBtnEl.textContent = 'Next ➔';
+      const tipText = getAccurateFeedback(currentProblem);
+      feedbackBoxEl.textContent = tipText;
+      feedbackBoxEl.className = 'feedback-box incorrect';
+      feedbackBoxEl.style.display = 'block';
+      
+      startLedgerModel(currentProblem);
+    }
+  }
+
+  function triggerCompletion() {
+    isCompleted = true;
+    if (animationInterval) {
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
+    problemDisplayEl.textContent = "🏆 Drill Completed!";
+    instructionSubtitleEl.textContent = "You reached 20 correct answers on the first try!";
+    practiceControlGroupEl.style.display = 'none';
+    feedbackBoxEl.style.display = 'none';
+    ledgerfieldEl.style.display = 'none';
+    
+    submitPanelEl.style.display = 'flex';
+    studentNameInputEl.focus();
+  }
+
+  function startLedgerModel(current) {
+    if (isCompleted) return;
+    ledgerfieldEl.style.display = 'block';
+    
+    if (current.type === 'same-sign-neg') {
+      renderSameSignLedgerfield(current.neg, current.group1, current.group2, 'neg');
+      runSameSignAnimation(current.group1, current.group2, 'negative');
+
+      animationInterval = setInterval(() => {
+        if (isCompleted) return;
+        renderSameSignLedgerfield(current.neg, current.group1, current.group2, 'neg');
+        runSameSignAnimation(current.group1, current.group2, 'negative');
+      }, 4000);
+    } else if (current.type === 'same-sign-pos') {
+      renderSameSignLedgerfield(current.pos, current.group1, current.group2, 'pos');
+      runSameSignAnimation(current.group1, current.group2, 'positive');
+
+      animationInterval = setInterval(() => {
+        if (isCompleted) return;
+        renderSameSignLedgerfield(current.pos, current.group1, current.group2, 'pos');
+        runSameSignAnimation(current.group1, current.group2, 'positive');
+      }, 4000);
+    } else {
+      runSingleLedgerCycle(current.pos, current.neg);
+
+      animationInterval = setInterval(() => {
+        if (isCompleted) return;
+        runSingleLedgerCycle(current.pos, current.neg);
+      }, 3200);
+    }
+  }
+
+  function renderSameSignLedgerfield(totalCount, g1Size, g2Size, signType) {
+    const labelPos = document.getElementById('labelPos');
+    const labelNeg = document.getElementById('labelNeg');
+
+    if (signType === 'neg') {
+      labelPos.textContent = `Credits (+0)`;
+      labelNeg.textContent = `Debits (-${totalCount})`;
+    } else {
+      labelPos.textContent = `Credits (+${totalCount})`;
+      labelNeg.textContent = `Debits (-0)`;
+    }
+
+    gridTrackEl.innerHTML = '';
+    gridTrackEl.appendChild(groupOutline1);
+    gridTrackEl.appendChild(groupOutline2);
+
+    groupOutline1.classList.remove('visible');
+    groupOutline2.classList.remove('visible');
+
+    for (let i = 0; i < totalCount; i++) {
+      const colDiv = document.createElement('div');
+      colDiv.className = 'token-column';
+
+      const topSlot = document.createElement('div');
+      topSlot.className = 'token-slot';
+      const bottomSlot = document.createElement('div');
+      bottomSlot.className = 'token-slot';
+
+      const token = document.createElement('div');
+      token.className = 'token';
+      
+      if (signType === 'neg') {
+        token.id = `neg-token-${i}`;
+        token.innerHTML = DEBIT_TOKEN_SVG;
+        bottomSlot.appendChild(token);
+      } else {
+        token.id = `pos-token-${i}`;
+        token.innerHTML = CREDIT_TOKEN_SVG;
+        topSlot.appendChild(token);
+      }
+
+      colDiv.appendChild(topSlot);
+      colDiv.appendChild(bottomSlot);
+      gridTrackEl.appendChild(colDiv);
+    }
+  }
+
+  function runSameSignAnimation(g1Size, g2Size, signWord) {
+    const colWidth = 40;
+    const gap = 8;
+    const leftPadding = 0;
+
+    const w1 = (g1Size * colWidth) + ((g1Size - 1) * gap) + 8;
+    const h1 = 56;
+    const topPos = signWord === 'negative' ? `80px` : `-2px`;
+
+    groupOutline1.style.width = `${w1}px`;
+    groupOutline1.style.height = `${h1}px`;
+    groupOutline1.style.left = `${leftPadding - 4}px`;
+    groupOutline1.style.top = topPos;
+
+    const left2 = (g1Size * (colWidth + gap)) - 4;
+    const w2 = (g2Size * colWidth) + ((g2Size - 1) * gap) + 8;
+
+    groupOutline2.style.width = `${w2}px`;
+    groupOutline2.style.height = `${h1}px`;
+    groupOutline2.style.left = `${left2}px`;
+    groupOutline2.style.top = topPos;
+
+    setTimeout(() => {
+      if (!isCompleted) groupOutline1.classList.add('visible');
+    }, 400);
+
+    setTimeout(() => {
+      if (!isCompleted) groupOutline2.classList.add('visible');
+    }, 900);
+
+    setTimeout(() => {
+      if (!isCompleted) {
+        waitingForEnter = true;
+        answerInputEl.focus();
+      }
+    }, 1500);
+  }
+
+  function runSingleLedgerCycle(posCount, negCount) {
+    if (isCompleted) return;
+    renderLedgerfieldGrid(posCount, negCount);
+
+    if (posCount > 0 && negCount > 0) {
+      const cancelCount = Math.min(posCount, negCount);
+      const posRowMoveY = 44; 
+      const negRowMoveY = -44; 
+
+      setTimeout(() => {
+        if (isCompleted) return;
+        for (let i = 0; i < cancelCount; i++) {
+          const posToken = document.getElementById(`pos-token-${i}`);
+          const negToken = document.getElementById(`neg-token-${i}`);
+
+          if (posToken && negToken) {
+            posToken.style.transform = `translateY(${posRowMoveY}px)`;
+            negToken.style.transform = `translateY(${negRowMoveY}px)`;
+          }
         }
+      }, 200);
 
-        function submitDetails() {
-            const formData = {
-                name: document.getElementById("nameInput").value.trim(),
-                level: currentLevel
-            };
+      setTimeout(() => {
+        if (isCompleted) return;
+        for (let i = 0; i < cancelCount; i++) {
+          const posToken = document.getElementById(`pos-token-${i}`);
+          const negToken = document.getElementById(`neg-token-${i}`);
 
-            fetch('https://script.google.com/macros/s/AKfycbzWoE2NrNffSm_AZdAe1sykhKAVelPYaY4rO9GnoBTDvTPAXqPB9gv0-00PvQ16D_kJ/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(() => alert('Progress submitted successfully!'))
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting progress.');
-            });
+          if (posToken && negToken) {
+            posToken.classList.add('disappearing');
+            negToken.classList.add('disappearing');
+          }
         }
+      }, 1050);
+    }
 
-        function endDrill() {
-            document.getElementById("quiz").style.display = "none";
-            document.getElementById("output").textContent = "Drill ended. Thank you for participating!";
-        }
+    setTimeout(() => {
+      if (!isCompleted) {
+        waitingForEnter = true;
+        answerInputEl.focus();
+      }
+    }, 1500);
+  }
 
-        document.getElementById("nameInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                startDrill();
-            }
-        });
-    </script>
+  function renderLedgerfieldGrid(posCount, negCount) {
+    const labelPos = document.getElementById('labelPos');
+    const labelNeg = document.getElementById('labelNeg');
+
+    labelPos.textContent = `Credits (+${posCount})`;
+    labelNeg.textContent = `Debits (-${negCount})`;
+
+    gridTrackEl.innerHTML = '';
+    gridTrackEl.appendChild(groupOutline1);
+    gridTrackEl.appendChild(groupOutline2);
+    groupOutline1.classList.remove('visible');
+    groupOutline2.classList.remove('visible');
+
+    const maxColumns = Math.max(posCount, negCount);
+
+    for (let i = 0; i < maxColumns; i++) {
+      const colDiv = document.createElement('div');
+      colDiv.className = 'token-column';
+
+      const topSlot = document.createElement('div');
+      topSlot.className = 'token-slot';
+      if (i < posCount) {
+        const token = document.createElement('div');
+        token.className = 'token';
+        token.id = `pos-token-${i}`;
+        token.innerHTML = CREDIT_TOKEN_SVG;
+        topSlot.appendChild(token);
+      }
+
+      const bottomSlot = document.createElement('div');
+      bottomSlot.className = 'token-slot';
+      if (i < negCount) {
+        const token = document.createElement('div');
+        token.className = 'token';
+        token.id = `neg-token-${i}`;
+        token.innerHTML = DEBIT_TOKEN_SVG;
+        bottomSlot.appendChild(token);
+      }
+
+      colDiv.appendChild(topSlot);
+      colDiv.appendChild(bottomSlot);
+      gridTrackEl.appendChild(colDiv);
+    }
+  }
+
+  function nextProblem() {
+    loadNewProblem();
+  }
+
+  function resetPractice() {
+    isCompleted = false;
+    firstTryCorrectCount = 0;
+    updateScoreDisplay();
+    instructionSubtitleEl.textContent = "Solve 20 problems on the first try to complete your practice assignment!";
+    practiceControlGroupEl.style.display = 'flex';
+    submitPanelEl.style.display = 'none';
+    loadNewProblem();
+  }
+
+  function submitScoreToTeacher() {
+    const studentName = studentNameInputEl.value.trim();
+    if (!studentName) {
+      alert("Please enter your name before submitting your score!");
+      studentNameInputEl.focus();
+      return;
+    }
+
+    const formUrl = `${GOOGLE_FORM_URL}?${ENTRY_NAME_ID}=${encodeURIComponent(studentName)}&${ENTRY_SCORE_ID}=${encodeURIComponent(firstTryCorrectCount)}`;
+    window.open(formUrl, '_blank');
+  }
+</script>
+
 </body>
 </html>
