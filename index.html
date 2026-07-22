@@ -138,31 +138,6 @@
       background-color: #1d4ed8;
     }
 
-    .feedback-box {
-      margin-top: 1rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      display: none;
-      padding: 0.6rem;
-      border-radius: 8px;
-      max-width: 450px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.3;
-    }
-
-    .feedback-box.incorrect {
-      background-color: #ffeeec;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
-    .feedback-box.correct {
-      background-color: #ecfdf5;
-      color: #059669;
-      border: 1px solid #a7f3d0;
-    }
-
     .submit-panel {
       margin-top: 1rem;
       padding-top: 1rem;
@@ -198,10 +173,10 @@
 
     .ledgerfield-card {
       width: 100vw;
-      height: 150px;
+      height: 200px;
       padding: 0.75rem 0;
       display: block;
-      visibility: hidden; /* Reserved footprint without shifting layout */
+      visibility: hidden;
       position: relative;
       background: #e2e8f0;
       border-top: 2px solid #cbd5e1;
@@ -211,9 +186,16 @@
 
     .ledgerfield-layout {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       width: 100%;
       padding-left: calc((100vw - 900px) / 2 + 1.5rem);
+      padding-right: 1.5rem;
+    }
+
+    .ledger-top-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
     }
 
     @media (max-width: 900px) {
@@ -303,6 +285,25 @@
     .group-outline.visible {
       opacity: 1;
     }
+
+    .feedback-box {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: none;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      max-width: 600px;
+      line-height: 1.3;
+      text-align: center;
+      align-self: center;
+    }
+
+    .feedback-box.incorrect {
+      background-color: #ffeeec;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
   </style>
 </head>
 <body>
@@ -320,7 +321,6 @@
       <input type="text" id="answerInput" placeholder="Your answer" autofocus />
       <button class="action-btn" id="submitBtn" onclick="handleAction()">Submit</button>
     </div>
-    <div id="feedbackBox" class="feedback-box"></div>
 
     <div id="submitPanel" class="submit-panel">
       <p style="color: #059669; font-weight: 700; margin: 0;">🎉 Drill Complete! Enter your name to submit:</p>
@@ -332,15 +332,18 @@
 
 <div id="ledgerfield" class="ledgerfield-card">
   <div class="ledgerfield-layout">
-    <div class="labels-column">
-      <div id="labelPos" class="label">Credits (+0)</div>
-      <div id="labelNeg" class="label">Debits (-0)</div>
+    <div class="ledger-top-row">
+      <div class="labels-column">
+        <div id="labelPos" class="label">Credits (+0)</div>
+        <div id="labelNeg" class="label">Debits (-0)</div>
+      </div>
+      
+      <div id="gridTrack" class="grid-track" style="position: relative;">
+        <div id="groupOutline1" class="group-outline"></div>
+        <div id="groupOutline2" class="group-outline"></div>
+      </div>
     </div>
-    
-    <div id="gridTrack" class="grid-track" style="position: relative;">
-      <div id="groupOutline1" class="group-outline"></div>
-      <div id="groupOutline2" class="group-outline"></div>
-    </div>
+    <div id="feedbackBox" class="feedback-box"></div>
   </div>
 </div>
 
