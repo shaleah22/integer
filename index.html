@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Adding and Subtracting Integers </title>
+  <title>Add and Subtract Integers</title>
   <style>
     * {
       box-sizing: border-box;
       font-family: system-ui, -apple-system, sans-serif;
     }
 
-    body {
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
       background-color: #f1f5f9;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 0;
-      margin: 0;
-      overflow-x: hidden;
+      justify-content: center;
     }
 
     .container {
@@ -25,32 +27,36 @@
       width: 100%;
       padding: 0 1.5rem;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .score-badge {
       position: absolute;
-      top: 0;
+      top: -2.5rem;
       left: 1.5rem;
       background-color: #ecfdf5;
       color: #059669;
       border: 1px solid #a7f3d0;
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 6px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       z-index: 5;
     }
 
     .reset-btn {
       position: absolute;
-      top: 0;
+      top: -2.5rem;
       right: 1.5rem;
       background-color: #e2e8f0;
       color: #334155;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 6px;
       font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: background-color 0.2s;
       z-index: 5;
@@ -62,33 +68,36 @@
 
     h1 {
       margin-top: 0;
+      margin-bottom: 0.25rem;
       color: #0f172a;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       text-align: center;
     }
 
     p.subtitle {
       color: #64748b;
-      margin-top: -0.5rem;
-      margin-bottom: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
       text-align: center;
+      font-size: 0.95rem;
     }
 
     .card {
-      max-width: 600px;
-      margin: 0 auto 1.5rem auto;
+      max-width: 650px;
+      width: 100%;
+      margin: 0 auto;
       text-align: center;
       background: #ffffff;
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: 12px;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
 
     .problem-display {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: #1e293b;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .input-group {
@@ -100,8 +109,8 @@
 
     input[type="text"] {
       flex: 1;
-      padding: 0.75rem 1rem;
-      font-size: 1.25rem;
+      padding: 0.6rem 1rem;
+      font-size: 1.15rem;
       border: 2px solid #cbd5e1;
       border-radius: 8px;
       outline: none;
@@ -114,8 +123,8 @@
     }
 
     button.action-btn {
-      padding: 0.75rem 1.5rem;
-      font-size: 1.1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1.05rem;
       font-weight: 600;
       background-color: #2563eb;
       color: white;
@@ -130,16 +139,16 @@
     }
 
     .feedback-box {
-      margin-top: 1.25rem;
-      font-size: 1.05rem;
+      margin-top: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       display: none;
-      padding: 0.75rem;
+      padding: 0.6rem;
       border-radius: 8px;
       max-width: 450px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1.4;
+      line-height: 1.3;
     }
 
     .feedback-box.incorrect {
@@ -155,12 +164,12 @@
     }
 
     .submit-panel {
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
       border-top: 1px solid #e2e8f0;
       display: none;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.5rem;
       align-items: center;
     }
 
@@ -173,8 +182,8 @@
       background-color: #059669;
       color: white;
       border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
@@ -189,13 +198,15 @@
 
     .ledgerfield-card {
       width: 100vw;
-      padding: 1.5rem 0;
-      display: none;
+      height: 150px;
+      padding: 0.75rem 0;
+      display: block;
+      visibility: hidden; /* Reserved footprint without shifting layout */
       position: relative;
       background: #e2e8f0;
       border-top: 2px solid #cbd5e1;
       border-bottom: 2px solid #cbd5e1;
-      margin-top: 1rem;
+      margin-top: 1.25rem;
     }
 
     .ledgerfield-layout {
@@ -215,16 +226,16 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 140px;
-      min-width: 170px;
+      height: 110px;
+      min-width: 160px;
       padding-right: 1rem;
     }
 
     .label {
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       color: #334155;
-      height: 52px;
+      height: 40px;
       display: flex;
       align-items: center;
       white-space: nowrap;
@@ -232,11 +243,11 @@
 
     .grid-track {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       overflow-x: auto;
       overflow-y: hidden;
       flex: 1;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       padding-right: 2rem;
       position: relative;
     }
@@ -245,22 +256,22 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 140px;
-      width: 40px;
+      height: 110px;
+      width: 34px;
       flex-shrink: 0;
     }
 
     .token-slot {
-      width: 40px;
-      height: 52px;
+      width: 34px;
+      height: 40px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .token {
-      width: 40px;
-      height: 52px;
+      width: 34px;
+      height: 40px;
       transition: transform 0.8s ease-in-out, opacity 0.4s ease-out;
       position: relative;
       z-index: 10;
@@ -281,7 +292,7 @@
     .group-outline {
       position: absolute;
       border: 3px dashed #2563eb;
-      border-radius: 10px;
+      border-radius: 8px;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.4s ease-in-out, width 0.5s ease-in-out, left 0.5s ease-in-out;
@@ -301,7 +312,7 @@
   <button class="reset-btn" onclick="resetPractice()">Restart</button>
 
   <h1>Add & Subtract Integers</h1>
-  <p id="instructionSubtitle" class="subtitle">Solve 20 problems on the first try to complete your practice assignment! You can press enter to go to the next problem.</p>
+  <p id="instructionSubtitle" class="subtitle">Solve 20 problems on the first try to complete your practice assignment! Press enter to advance.</p>
 
   <div class="card">
     <div id="problemDisplay" class="problem-display"></div>
@@ -429,32 +440,25 @@
     let a = 0, b = 0;
     let opType = 0;
     let category = getRandomInt(1, 4); 
-    // 1: Double Negative (e.g. a - (-b))
-    // 2: Same Sign Negative (e.g. -a + (-b) or -a - b)
-    // 3: Cancellation / Mixed Signs
-    // 4: Elementary Positive (kept rare: restricted to low frequency)
 
     while (true) {
       if (category === 1) {
-        // Double Negative: a - (-b)
         opType = 1;
         a = getRandomInt(-9, 9);
         b = getRandomInt(-9, -1);
         while (a === 0) a = getRandomInt(-9, 9);
         break;
       } else if (category === 2) {
-        // Same Sign Negative: both numbers contribute to a negative sum
         opType = getRandomInt(0, 1);
         if (opType === 0) {
           a = getRandomInt(-9, -1);
           b = getRandomInt(-9, -1);
         } else {
           a = getRandomInt(-9, -1);
-          b = getRandomInt(1, 9); // negative minus positive = more negative
+          b = getRandomInt(1, 9);
         }
         break;
       } else if (category === 3) {
-        // Cancellation / Mixed signs
         opType = getRandomInt(0, 1);
         a = getRandomInt(-9, 9);
         b = getRandomInt(-9, 9);
@@ -469,14 +473,12 @@
           break;
         }
       } else {
-        // Elementary Positive (rarely picked, only ~15% chance to actually keep)
         opType = 0;
         a = getRandomInt(1, 6);
         b = getRandomInt(1, 6);
         if (Math.random() < 0.15) {
           break;
         }
-        // otherwise retry category loop
         category = getRandomInt(1, 3);
       }
     }
@@ -496,17 +498,9 @@
       ans = a + b;
 
       if (b < 0) {
-        if (a < 0) {
-          isSameSign = true;
-        } else {
-          isSameSign = false;
-        }
+        isSameSign = (a < 0);
       } else {
-        if (a > 0 && b > 0) {
-          isSameSign = true;
-        } else if (a < 0 && b < 0) {
-          isSameSign = true;
-        }
+        isSameSign = ((a > 0 && b > 0) || (a < 0 && b < 0));
       }
 
       if (a < 0 && b < 0) {
@@ -584,7 +578,7 @@
     answerInputEl.disabled = false;
     submitBtnEl.textContent = 'Submit';
     feedbackBoxEl.style.display = 'none';
-    ledgerfieldEl.style.display = 'none';
+    ledgerfieldEl.style.visibility = 'hidden';
     answerInputEl.focus();
   }
 
@@ -608,6 +602,11 @@
       
       let abs1 = Math.abs(effectiveNum1);
       let abs2 = Math.abs(effectiveNum2);
+      
+      if (prob.ans === 0) {
+        return `Subtract absolute values (${Math.max(abs1, abs2)} - ${Math.min(abs1, abs2)}). The answer is 0, which is neither positive nor negative.`;
+      }
+      
       let largerNum = abs1 >= abs2 ? effectiveNum1 : effectiveNum2;
       let signText = largerNum < 0 ? "Keep bigger absolute value sign (negative)" : "Keep bigger absolute value sign (positive)";
       
@@ -669,7 +668,7 @@
     instructionSubtitleEl.textContent = "You reached 20 correct answers on the first try!";
     practiceControlGroupEl.style.display = 'none';
     feedbackBoxEl.style.display = 'none';
-    ledgerfieldEl.style.display = 'none';
+    ledgerfieldEl.style.visibility = 'hidden';
     
     submitPanelEl.style.display = 'flex';
     studentNameInputEl.focus();
@@ -677,7 +676,7 @@
 
   function startLedgerModel(current) {
     if (isCompleted) return;
-    ledgerfieldEl.style.display = 'block';
+    ledgerfieldEl.style.visibility = 'visible';
     
     if (current.type === 'same-sign-neg') {
       renderSameSignLedgerfield(current.neg, current.group1, current.group2, 'neg');
@@ -755,21 +754,21 @@
   }
 
   function runSameSignAnimation(g1Size, g2Size, signWord) {
-    const colWidth = 40;
-    const gap = 8;
+    const colWidth = 34;
+    const gap = 6;
     const leftPadding = 0;
 
-    const w1 = (g1Size * colWidth) + ((g1Size - 1) * gap) + 8;
-    const h1 = 56;
-    const topPos = signWord === 'negative' ? `80px` : `-2px`;
+    const w1 = (g1Size * colWidth) + ((g1Size - 1) * gap) + 6;
+    const h1 = 44;
+    const topPos = signWord === 'negative' ? `62px` : `-2px`;
 
     groupOutline1.style.width = `${w1}px`;
     groupOutline1.style.height = `${h1}px`;
-    groupOutline1.style.left = `${leftPadding - 4}px`;
+    groupOutline1.style.left = `${leftPadding - 3}px`;
     groupOutline1.style.top = topPos;
 
-    const left2 = (g1Size * (colWidth + gap)) - 4;
-    const w2 = (g2Size * colWidth) + ((g2Size - 1) * gap) + 8;
+    const left2 = (g1Size * (colWidth + gap)) - 3;
+    const w2 = (g2Size * colWidth) + ((g2Size - 1) * gap) + 6;
 
     groupOutline2.style.width = `${w2}px`;
     groupOutline2.style.height = `${h1}px`;
@@ -798,8 +797,8 @@
 
     if (posCount > 0 && negCount > 0) {
       const cancelCount = Math.min(posCount, negCount);
-      const posRowMoveY = 44; 
-      const negRowMoveY = -44; 
+      const posRowMoveY = 34; 
+      const negRowMoveY = -34; 
 
       setTimeout(() => {
         if (isCompleted) return;
@@ -889,7 +888,7 @@
     isCompleted = false;
     firstTryCorrectCount = 0;
     updateScoreDisplay();
-    instructionSubtitleEl.textContent = "Solve 20 problems on the first try to complete your practice assignment!";
+    instructionSubtitleEl.textContent = "Solve 20 problems on the first try to complete your practice assignment! Press enter to advance.";
     practiceControlGroupEl.style.display = 'flex';
     submitPanelEl.style.display = 'none';
     loadNewProblem();
