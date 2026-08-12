@@ -101,6 +101,19 @@
       line-height: 1.2;
     }
 
+    /* Color coding rules */
+    .num-negative {
+      color: #ef4444;
+    }
+
+    .num-positive {
+      color: #0f172a;
+    }
+
+    .num-double-sign {
+      color: #2563eb;
+    }
+
     .sign-hint {
       font-size: 0.85rem;
       font-weight: 600;
@@ -112,7 +125,9 @@
     }
 
     .op-sign.clickable,
-    .inner-sign.clickable {
+    .inner-sign.clickable,
+    .op-single.clickable,
+    .combined-sign.clickable {
       cursor: pointer;
       display: inline-block;
       padding: 0 0.1em;
@@ -123,62 +138,28 @@
     }
 
     .op-sign.clickable:hover,
-    .inner-sign.clickable:hover {
+    .inner-sign.clickable:hover,
+    .op-single.clickable:hover,
+    .combined-sign.clickable:hover {
       background-color: #f1f5f9;
       border-bottom-color: #2563eb;
     }
 
     .op-sign.clickable:active,
-    .inner-sign.clickable:active {
+    .inner-sign.clickable:active,
+    .op-single.clickable:active,
+    .combined-sign.clickable:active {
       transform: scale(0.92);
-    }
-
-    .op-sign.struck-out {
-      position: relative;
-      color: #94a3b8;
-      border-bottom: 4px dotted transparent;
-    }
-
-    .op-sign.struck-out::after {
-      content: '';
-      position: absolute;
-      left: 6%;
-      right: 6%;
-      top: 48%;
-      height: 5px;
-      background-color: #0f172a;
-      transform: rotate(-12deg);
-      border-radius: 2px;
-    }
-
-    .paren-part {
-      transition: opacity 0.15s;
     }
 
     .combined-sign {
       display: inline-block;
-      color: #059669;
+      color: #0f172a;
       font-weight: 900;
       padding: 0 0.15em;
       border-radius: 4px;
-      border-bottom: 4px dotted transparent;
+      border-bottom: 4px dotted #cbd5e1;
       animation: pop-in 0.3s ease-out;
-    }
-
-    .combined-sign.clickable {
-      cursor: pointer;
-      border-bottom-color: #a7f3d0;
-      transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
-      user-select: none;
-    }
-
-    .combined-sign.clickable:hover {
-      background-color: #ecfdf5;
-      border-bottom-color: #059669;
-    }
-
-    .combined-sign.clickable:active {
-      transform: scale(0.92);
     }
 
     @keyframes pop-in {
@@ -396,11 +377,11 @@
 <body>
 
 <div class="container">
-  <div id="scoreBadge" class="score-badge">Score: 0 / 20</div>
+  <div id="scoreBadge" class="score-badge">Score: 0 / 30</div>
   <button class="reset-btn" onclick="resetPractice()">Restart</button>
 
   <h1>Add & Subtract Integers</h1>
-  <p id="instructionSubtitle" class="subtitle">👆 Tap any highlighted sign to simplify it. Solve 20 problems on the first try to complete your practice assignment! Press enter to advance.</p>
+  <p id="instructionSubtitle" class="subtitle">Solve 30 problems on the first try to complete your practice assignment! Press enter to advance.</p>
 
   <div class="card">
     <div id="problemDisplay" class="problem-display"></div>
@@ -411,9 +392,21 @@
     </div>
 
     <div id="submitPanel" class="submit-panel">
-      <p style="color: #059669; font-weight: 700; margin: 0;">🎉 Drill Complete! Enter your name to submit:</p>
-      <input type="text" id="studentNameInput" placeholder="Your Full Name" />
-      <button class="submit-homework-btn" onclick="submitScoreToTeacher()">YOU NEED TO PRESS THE SUBMIT BUTTON TWICE. ONCE HERE AND ONCE ON THE GOOGLE FORM. ➔</button>
+      <p style="color: #059669; font-weight: 800; font-size: 1.1rem; margin: 0;">🎉 DRILL COMPLETE!</p>
+      <div style="background-color: #fef2f2; border: 2px solid #ef4444; border-radius: 8px; padding: 0.75rem; width: 100%; max-width: 400px; text-align: center; margin-top: 0.25rem;">
+        <p style="color: #dc2626; font-weight: 900; font-size: 0.95rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+          ⚠️ IMPORTANT INSTRUCTION ⚠️
+        </p>
+        <p style="color: #991b1b; font-weight: 700; font-size: 0.9rem; margin: 0.25rem 0 0 0;">
+          You must click <strong>SUBMIT TWICE</strong> to finish:<br>
+          1️⃣ Click the green button below.<br>
+          2️⃣ Click <strong>SUBMIT</strong> again on the Google Form that opens!
+        </p>
+      </div>
+      <input type="text" id="studentNameInput" placeholder="Your Full Name" style="margin-top: 0.5rem;" />
+      <button class="submit-homework-btn" onclick="submitScoreToTeacher()" style="font-weight: 800; background-color: #059669; padding: 0.8rem 1.2rem; font-size: 1rem;">
+        1️⃣ CLICK HERE FIRST TO SUBMIT ➔
+      </button>
     </div>
   </div>
 </div>
@@ -442,7 +435,7 @@
   const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe4_Gnrq1zyrttA3lSgrVBtMkaVaoMim31ByzoH-orxmfDB2A/viewform";
   const ENTRY_NAME_ID = "entry.1899284808"; 
   const ENTRY_SCORE_ID = "entry.1974610095"; 
-  const TARGET_SCORE = 20;                 
+  const TARGET_SCORE = 30;                 
   // ==========================================
 
   const DEBIT_TOKEN_SVG = `
@@ -647,12 +640,6 @@
       }
     }
 
-    // Whether the problem shows a "double sign" (an operator sitting right
-    // next to a negative number in parentheses) that can be tapped to
-    // simplify: "+ -" collapses to a single "-", and "- -" collapses to a
-    // single "+". This is purely about the notation, so it applies the same
-    // way whether the two numbers end up being the same sign (add absolute
-    // values) or different signs (subtract absolute values).
     const hasDoubleSign = (b < 0);
     let combinedOp = null, operatorShown = null;
     if (hasDoubleSign) {
@@ -665,7 +652,7 @@
       }
     }
 
-    return { expr, ans, pos, neg, type, group1: g1, group2: g2, isDoubleNeg, isSameSign, a, b, hasDoubleSign, combinedOp, operatorShown };
+    return { expr, ans, pos, neg, type, group1: g1, group2: g2, isDoubleNeg, isSameSign, a, b, hasDoubleSign, combinedOp, operatorShown, opType };
   }
 
   function loadNewProblem() {
@@ -692,17 +679,24 @@
     answerInputEl.focus();
   }
 
-  // Renders the problem. For problems with a double sign (- - or + -),
-  // the operator sign and the inner sign are rendered as clickable spans.
-  // Clicking either one toggles between the "raw" view (e.g. 5 - (-7))
-  // and the "simplified" view (e.g. 5 + 7), so students can visually
-  // discover how the double sign collapses - whether that leaves them
-  // combining same signs or subtracting different signs.
   function renderProblemDisplay(problem) {
     problem.isRevealed = false;
 
     if (!problem.hasDoubleSign) {
-      problemDisplayEl.textContent = problem.expr;
+      const aClass = problem.a < 0 ? 'num-negative' : 'num-positive';
+
+      if (problem.opType === 1) {
+        problemDisplayEl.innerHTML =
+          `<span class="${aClass}">${problem.a}</span> ` +
+          `<span class="op-single num-negative">-</span> ` +
+          `<span class="num-negative">${problem.b}</span>`;
+      } else {
+        const bClass = problem.b < 0 ? 'num-negative' : 'num-positive';
+        problemDisplayEl.innerHTML =
+          `<span class="${aClass}">${problem.a}</span> ` +
+          `<span class="op-single">+</span> ` +
+          `<span class="${bClass}">${problem.b}</span>`;
+      }
       signHintEl.textContent = '';
       return;
     }
@@ -710,17 +704,15 @@
     const innerAbs = Math.abs(problem.b);
 
     problemDisplayEl.innerHTML =
-      `<span class="num-part">${problem.a}</span> ` +
-      `<span class="op-sign clickable" id="opSignEl">${problem.operatorShown}</span> ` +
-      `<span class="paren-part" id="openParenEl">(</span>` +
-      `<span class="inner-sign clickable" id="innerSignEl">-</span>` +
-      `<span class="combined-sign clickable" id="combinedSignEl" style="display:none;">+</span>` +
-      `<span class="num-part">${innerAbs}</span>` +
-      `<span class="paren-part" id="closeParenEl">)</span>`;
+      `<span class="num-double-sign">${problem.a}</span> ` +
+      `<span class="op-sign clickable num-double-sign" id="opSignEl">${problem.operatorShown}</span> ` +
+      `<span class="paren-part num-double-sign" id="openParenEl">(</span>` +
+      `<span class="inner-sign clickable num-double-sign" id="innerSignEl">-</span>` +
+      `<span class="num-part num-double-sign">${innerAbs}</span>` +
+      `<span class="paren-part num-double-sign" id="closeParenEl">)</span>`;
 
     document.getElementById('opSignEl').addEventListener('click', () => toggleSignReveal(problem));
     document.getElementById('innerSignEl').addEventListener('click', () => toggleSignReveal(problem));
-    document.getElementById('combinedSignEl').addEventListener('click', () => toggleSignReveal(problem));
 
     signHintEl.textContent = '👆 Tap the signs to simplify';
   }
@@ -732,36 +724,29 @@
   }
 
   function applyRevealState(problem) {
-    const opSignEl = document.getElementById('opSignEl');
-    const innerSignEl = document.getElementById('innerSignEl');
-    const openParenEl = document.getElementById('openParenEl');
-    const closeParenEl = document.getElementById('closeParenEl');
-    const combinedSignEl = document.getElementById('combinedSignEl');
-    if (!opSignEl) return;
-
     if (problem.isRevealed) {
+      const aClass = problem.a < 0 ? 'num-negative' : 'num-positive';
+      const innerAbs = Math.abs(problem.b);
+
       if (problem.combinedOp === '+') {
-        // - - together become a single big +, negatives disappear
-        opSignEl.style.display = 'none';
-        innerSignEl.style.display = 'none';
-        openParenEl.style.display = 'none';
-        closeParenEl.style.display = 'none';
-        combinedSignEl.style.display = 'inline-block';
+        problemDisplayEl.innerHTML =
+          `<span class="${aClass}">${problem.a}</span> ` +
+          `<span class="combined-sign clickable" id="combinedSignEl">+</span> ` +
+          `<span class="num-positive">${innerAbs}</span>`;
+
+        document.getElementById('combinedSignEl').addEventListener('click', () => toggleSignReveal(problem));
       } else {
-        // + gets blacked out, parens fall away, leaving the true - visible
-        opSignEl.classList.add('struck-out');
-        openParenEl.style.display = 'none';
-        closeParenEl.style.display = 'none';
+        problemDisplayEl.innerHTML =
+          `<span class="${aClass}">${problem.a}</span> ` +
+          `<span class="op-single clickable num-negative" id="opSingleEl">-</span> ` +
+          `<span class="num-negative">${innerAbs}</span>`;
+
+        document.getElementById('opSingleEl').addEventListener('click', () => toggleSignReveal(problem));
       }
+
       signHintEl.textContent = '👆 Tap again to see the original signs';
     } else {
-      opSignEl.style.display = 'inline-block';
-      opSignEl.classList.remove('struck-out');
-      innerSignEl.style.display = 'inline-block';
-      openParenEl.style.display = 'inline';
-      closeParenEl.style.display = 'inline';
-      combinedSignEl.style.display = 'none';
-      signHintEl.textContent = '👆 Tap the signs to simplify';
+      renderProblemDisplay(problem);
     }
   }
 
@@ -848,7 +833,8 @@
       animationInterval = null;
     }
     problemDisplayEl.textContent = "🏆 Drill Completed!";
-    instructionSubtitleEl.textContent = "You reached 20 correct answers on the first try!";
+    signHintEl.textContent = "";
+    instructionSubtitleEl.textContent = `You reached ${TARGET_SCORE} correct answers on the first try!`;
     practiceControlGroupEl.style.display = 'none';
     feedbackBoxEl.style.display = 'none';
     ledgerfieldEl.style.visibility = 'hidden';
@@ -1071,7 +1057,7 @@
     isCompleted = false;
     firstTryCorrectCount = 0;
     updateScoreDisplay();
-    instructionSubtitleEl.textContent = "👆 Tap any highlighted sign to simplify it. Solve 20 problems on the first try to complete your practice assignment! Press enter to advance.";
+    instructionSubtitleEl.textContent = `Solve ${TARGET_SCORE} problems on the first try to complete your practice assignment! Press enter to advance.`;
     practiceControlGroupEl.style.display = 'flex';
     submitPanelEl.style.display = 'none';
     loadNewProblem();
